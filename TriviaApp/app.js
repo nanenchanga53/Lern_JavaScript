@@ -1,5 +1,5 @@
 // initialize variables
-var questionID, question, choiceA, choiceB, choiceC, choiceD, questions, numQuestions, qInfo, userChoice
+var questionID, question, choiceA, choiceB, choiceC, choiceD, userChoice, questions, numQuestions, qInfo,
 current = 0,
 score = 0,
 points = [];
@@ -46,7 +46,7 @@ var defaultQuestions = [
         correct: "C"
     }];
 
-// reference HTML elements
+var elQuiz = document.getElementById("quiz");
 var elQuizStatus = document.getElementById("quizStatus");
 
 var elQuestion = document.getElementById("question");
@@ -75,7 +75,6 @@ function populateQuestions(){
 }
 
 function populateQuestionInfo(){
-    // populate current question info from question list
     question = questions[current].question;
     qInfo = questions[current];
     choiceA = qInfo.choiceA;
@@ -86,7 +85,6 @@ function populateQuestionInfo(){
 }
 
 function renderQuestion(){
-    // display question on webpage
     questionID = current + 1;
     elQuizStatus.innerHTML = "Question " + (questionID) + " of " + (numQuestions);
     populateQuestionInfo();
@@ -106,9 +104,15 @@ function gradeQuestion(){
         else{
             points[current] = 0;
         }
-        // next question
-        current++;
-        renderQuestion();
+
+        if(current == questions.length-1){
+            endGame();
+        }
+        else{
+            // next question
+            current++;
+            renderQuestion();
+        }
     }
 }
 
@@ -128,4 +132,22 @@ function getUserChoice(){
     // user didn't select an answer
     alert("Please select an answer before continuing");
     return false;
+}
+
+function endGame(){
+    elQuiz.innerHTML = "<h2>Your Score: " + score + " out of " + numQuestions + "</h2>";
+    for(var i = 0; i < points.length; i++){
+        var summary = document.createElement("p");
+        if(points[i] == 0){
+            summary.innerHTML = "Question #" + (i+1) + ": INCORRECT";
+            summary.style.color = "red";
+        }
+        else{
+            summary.innerHTML = "Question #" + (i+1) + ": CORRECT!";
+            summary.style.color = "green";
+        }
+        elQuiz.appendChild(summary); 
+    }
+    document.getElementById("options").style.display = "block";
+
 }
